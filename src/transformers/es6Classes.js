@@ -20,6 +20,12 @@ function containsFlowProps(classBody) {
   );
 }
 
+const addSupertypeAnnotation = (j, body, propIdentifier) => {
+  body.value.superTypeParameters = j.typeParameterInstantiation([
+    j.genericTypeAnnotation(j.identifier(propIdentifier), null),
+  ]);
+};
+
 /**
  * Transforms es2016 components
  * @return true if any components were transformed.
@@ -51,6 +57,7 @@ export default function transformEs6Classes(ast, j) {
         }
 
         annotateConstructor(j, classBody, propIdentifier);
+        addSupertypeAnnotation(j, p, propIdentifier);
         const index = findIndex(classBody, isStaticPropType);
         if (typeof index !== 'undefined') {
           const classProperty = classBody.splice(index, 1).pop();
